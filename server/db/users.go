@@ -1,6 +1,7 @@
 package db
 
 import (
+	"blogs/server/response"
 	"context"
 	"database/sql"
 	"time"
@@ -9,7 +10,7 @@ import (
 )
 
 type User struct {
-	ID        string    `db:"id"`
+	ID        int       `db:"id"`
 	Username  string    `db:"username"`
 	Email     string    `db:"email"`
 	Password  string    `db:"password"`
@@ -73,4 +74,14 @@ func UserCreate(c context.Context, db *sqlx.DB, req User) error {
 		return err
 	}
 	return nil
+}
+
+func (u User) Response() response.User {
+	return response.User{
+		ID:        u.ID,
+		Email:     u.Email,
+		Username:  u.Username,
+		Password:  u.Password,
+		CreatedAt: u.CreatedAt,
+	}
 }

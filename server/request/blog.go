@@ -15,6 +15,14 @@ type BlogCreate struct {
 	CreatedAt   *time.Time     `json:"created_at"`
 }
 
+type BlogUpdate struct {
+	Author      string         `json:"author"`
+	AuthorEmail string         `json:"author_email"`
+	Title       string         `json:"title"`
+	Content     string         `json:"content"`
+	Categories  common.Strings `json:"categories"`
+}
+
 func (bc BlogCreate) DB() db.BlogDraft {
 	return db.BlogDraft{
 		Author:      bc.Author,

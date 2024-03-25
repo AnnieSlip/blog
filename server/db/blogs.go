@@ -75,6 +75,23 @@ func BlogByID(c context.Context, db *sqlx.DB, id int) (*Blog, error) {
 	return &b, nil
 }
 
+func BlogUpdate(c context.Context, db *sqlx.DB, blog Blog) error {
+	_, err := namedExecContext(c, db, `
+	UPDATE  blogs
+	SET
+	    author = :author
+		title = :title,
+		content = :content,
+		categories = :categories,
+		author_email = :author_email
+	WHERE
+	  	id = :id`, blog)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func BlogAdd(c context.Context, db *sqlx.DB, req BlogDraft) error {
 	_, err := db.NamedExecContext(c, `
         INSERT INTO blogs

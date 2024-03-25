@@ -2,6 +2,7 @@ package handler
 
 import (
 	"blogs/server/db"
+	"blogs/server/domain"
 	"context"
 	"net/http"
 	"strconv"
@@ -65,6 +66,29 @@ func blogByID(database *sqlx.DB) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, blog.Response())
+
+	}
+}
+
+func editBlog(database *sqlx.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		id, err := strconv.Atoi(c.Param("id"))
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		var r request.BlogUpdate
+		err = c.Bind(&r)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		err = domain.BlogUpdate(c, database, r, id)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.Status(http.StatusNoContent)
 
 	}
 }
